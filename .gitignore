@@ -1,5 +1,7 @@
-# Ignore all raw data files
+# Ignore all data files
 data_raw/*
+data_clean/*
 # except the placeholder file that keeps
-# the directory in the repository
+# the directories in the repository
 !data_raw/.gitkeep
+!data_clean/.gitkeep

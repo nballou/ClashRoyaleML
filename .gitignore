@@ -1,0 +1,5 @@
+# Ignore all raw data files
+data_raw/*
+# except the placeholder file that keeps
+# the directory in the repository
+!data_raw/.gitkeep

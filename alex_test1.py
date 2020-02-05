@@ -19,4 +19,4 @@ df_cr = pd.concat(deserialize_cr, ignore_index=True)
 #df_cr.columns = ['Type','Result','Time','Left Trophy','Right Clan','Right Deck','Right Player','Right Trophy','RightTrophies','Clan','RightPlayer']
 print(df_cr.head())
 
-df_cr.to_csv("/Users/mac/Desktop/ClashRoyale/matches.csv")
+df_cr.to_csv("/Users/mac/Desktop/matches.csv")

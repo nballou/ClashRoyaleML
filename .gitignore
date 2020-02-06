@@ -5,3 +5,6 @@ data_clean/*
 # the directories in the repository
 !data_raw/.gitkeep
 !data_clean/.gitkeep
+
+# Ignore notebook meta files
+.ipynb_checkpoints/

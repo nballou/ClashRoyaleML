@@ -20,15 +20,16 @@ from sklearn.linear_model import LogisticRegression
 
 ### SETTINGS
 
-# Random seed
-SEED = 42
-np.random.seed(SEED)
-
 # Base directory
 BASE = pathlib.Path.cwd()
 
-# Data dir
+# Data dir and files
 DATADIR = BASE / 'data_clean'
+
+FILEPREFIX = 'processed_split_seed999'
+
+FILENAME_TEST_DATA = '{}_test.csv'.format(FILEPREFIX)
+FILENAME_TRAIN_DATA = '{}_train.csv'.format(FILEPREFIX)
 
 
 
@@ -145,8 +146,8 @@ def load_data(PATH):
 print("Ready  ({})\n".format(clock()))
 
 
-X, y = load_data(DATADIR/'processed_split_train.csv')
-X_test, y_test = load_data(DATADIR/'processed_split_test.csv')
+X, y = load_data(DATADIR/FILENAME_TRAIN_DATA)
+X_test, y_test = load_data(DATADIR/FILENAME_TEST_DATA)
 
 
 clf = LogisticRegression(
@@ -155,7 +156,7 @@ clf = LogisticRegression(
 ).fit(X, y)
 
 score = clf.score(X_test, y_test)
-print("Test score \n{}\n".format(score))
+print("Test score  ({}) \n{}\n".format(clock(), score))
 
 
-print("Done  ({})\n".format(clock()))
+print("Done  ({})".format(clock()))

@@ -29,7 +29,7 @@ import pandas as pd
 ### SETTINGS
 
 # Random seed
-SEED = 999
+SEED = 112
 np.random.seed(SEED)
 
 # Base directory

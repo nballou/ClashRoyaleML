@@ -248,15 +248,13 @@ def test(model, X_test, y_test):
 
 ### RUNS
 # with different features
-# runs = [
-#     ('All features', cols_features_trophies + cols_features_cards + cols_features_card_lvls, False),
-#     ('No card lvls', cols_features_trophies + cols_features_cards, False),
-#     ('No trophies', cols_features_cards + cols_features_card_lvls, False),
-#     ('Only trophies', cols_features_trophies, False),
-#     ('Only cards', cols_features_cards, False),
-#     ('Only card lvls', cols_features_card_lvls, False)
-# ]
 runs = [
+    ('All features', cols_features_trophies + cols_features_cards + cols_features_card_lvls, False),
+    ('No card lvls', cols_features_trophies + cols_features_cards, False),
+    ('No trophies', cols_features_cards + cols_features_card_lvls, False),
+    # ('Only trophies', cols_features_trophies, False),
+    ('Only cards', cols_features_cards, False),
+    ('Only card lvls', cols_features_card_lvls, False),
     ('Only trophy discrepancy', ['trophy.discrepancy'], True)
 ]
 

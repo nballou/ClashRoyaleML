@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
+import pathlib
 import time
 
 # pip install progressbar2
 import progressbar
 
-import pathlib
 import pandas as pd
 
 
@@ -37,7 +37,7 @@ json = []
 with progressbar.ProgressBar(max_value=len(rows)) as bar:
     for i, row in enumerate(rows):
         try:
-            json.append(pd.io.json.json_normalize(eval(row)))
+            json.append(pd.json_normalize(eval(row)))
         except:
             pass
         bar.update(i)

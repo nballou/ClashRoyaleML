@@ -37,8 +37,8 @@ BASE = pathlib.Path.cwd()
 
 # Data dir and files
 DATADIR = BASE / 'data_clean'
-CSVFILE = 'processed_data.csv'
-SAVEPREFIX = 'processed_split_seed{}'.format(SEED)
+CSVFILE = 'processed_data_2.csv'
+SAVEPREFIX = 'processed_split2_seed{}'.format(SEED)
 
 FILENAME_TEST_INDEX = '{}_indices_test.csv'.format(SAVEPREFIX)
 FILENAME_TRAIN_INDEX = '{}_indices_train.csv'.format(SAVEPREFIX)

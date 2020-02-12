@@ -14,7 +14,7 @@ start = time.time()
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
 
 
 
@@ -239,7 +239,16 @@ def get_dataset(df, cols_features):
 
 # Training loop
 def train(X, y):
-    model = LogisticRegression(
+    model = MLPClassifier(
+        hidden_layer_sizes = (512, 64),
+
+        activation = 'relu',
+        solver = 'adam',
+        alpha = 0.0001,
+        batch_size = 256,
+        learning_rate = 'constant',
+        learning_rate_init = 0.001,
+
         random_state = SEED,
         max_iter = 2000,
         verbose = 1

@@ -1,15 +1,17 @@
 library(ggplot2)
 
-addSmallLegend <- function(myPlot, pointSize = 0.5, textSize = 3, spaceLegend = 0.1) {
+# Function (pulled from SO which modifies the legend in the plot based on a desired color square size, text size, and spacing.
+addSmallLegend <- function(myPlot, pointSize = 0.5, textSize = 3, spaceLegend = 0.1, num_columns = 2, num_rows = 38) {
   myPlot +
     guides(shape = guide_legend(override.aes = list(size = pointSize)),
            color = guide_legend(override.aes = list(size = pointSize)),
-           fill = guide_legend(ncol = 2, nrow = 38)) +
+           fill = guide_legend(ncol = num_columns, nrow = num_rows)) +
     theme(legend.title = element_text(size = textSize),
           legend.text  = element_text(size = textSize),
           legend.key.size = unit(spaceLegend, "lines"))
 }
 
+# Needed in order to combine the two columns for left and right players, which are in the same row of the df
 all_trophies <- as.vector(as.matrix(data[,c("players.left.trophy","players.right.trophy")]))
 all_levels <- as.vector(as.matrix(data[,c("avg_lvl_L","avg_lvl_R")]))
 

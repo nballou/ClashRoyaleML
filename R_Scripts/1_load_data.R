@@ -23,5 +23,3 @@ data$winner[data$left.result == data$right.result] = "draw"
 data = subset(data, data$left.result != data$right.result)
 
 data$trophy.discrepancy <- data$players.left.trophy-data$players.right.trophy
-
-

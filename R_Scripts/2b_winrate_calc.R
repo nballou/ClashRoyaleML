@@ -1,6 +1,19 @@
 library(ggplot2)
 
-data <- read.csv("processed_data.csv")
+# Complete list of all cards in the sample as a vector
+all_cards <- c("Skeletons","Ice_Spirit","Goblins","Spear_Goblins","Zap","Bats","Fire_Spirits","Archers","Arrows","Knight","Minions",
+               "Bomber","Cannon","Goblin_Gang","Mortar","Tesla","Barbarians","Minion_Horde","Royal_Giant","Elite_Barbarians","Heal",
+               "Ice_Golem","Tombstone","Mega_Minion","Dart_Goblin","Fireball","Mini_Pekka","Musketeer","Hog_Rider","Valkyrie","Battle_Ram",
+               "Furnace","Bomb_Tower","Giant","Goblin_Hut","Inferno_Tower","Wizard","Rocket","Elixir_Collector","Barbarian_Hut",
+               "Three_Musketeers","Mirror","Rage","Skeleton_Army","Goblin_Barrel","Tornado","Guards","Clone","Baby_Dragon","Poison",
+               "Dark_Prince","Freeze","Prince","Witch","Balloon","Bowler","Executioner","Giant_Skeleton","Lightning","X_Bow","PEKKA","Golem",
+               "The_Log","Miner","Princess","Ice_Wizard","Bandit","Night_Witch","Inferno_Dragon","Lumberjack","Electro_Wizard","Graveyard",
+               "Sparky","Lava_Hound")
+
+costs <- c(1,1,2,2,2,2,2,3,3,3,3,3,3,3,4,4,5,5,6,6,2,2,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,6,6,7,9,3,1,3,3,3,3,3,4,4,4,4,5,5,5,5,5,6,6,6,7,8,2,3,3,3,3,4,4,4,4,5,6,7)
+
+
+#data <- read.csv("processed_data.csv")
 
 # Function to calculate the win and use rates of a card; takes a string with the card name (with underscores) as an argument.
 calc_winrate <- function(card_name) {
@@ -107,17 +120,6 @@ best_combo <- function() {
 
 y <- best_combo()
 
-# Complete list of all cards in the sample as a vector
-all_cards <- c("Skeletons","Ice_Spirit","Goblins","Spear_Goblins","Zap","Bats","Fire_Spirits","Archers","Arrows","Knight","Minions",
-              "Bomber","Cannon","Goblin_Gang","Mortar","Tesla","Barbarians","Minion_Horde","Royal_Giant","Elite_Barbarians","Heal",
-              "Ice_Golem","Tombstone","Mega_Minion","Dart_Goblin","Fireball","Mini_Pekka","Musketeer","Hog_Rider","Valkyrie","Battle_Ram",
-              "Furnace","Bomb_Tower","Giant","Goblin_Hut","Inferno_Tower","Wizard","Rocket","Elixir_Collector","Barbarian_Hut",
-              "Three_Musketeers","Mirror","Rage","Skeleton_Army","Goblin_Barrel","Tornado","Guards","Clone","Baby_Dragon","Poison",
-              "Dark_Prince","Freeze","Prince","Witch","Balloon","Bowler","Executioner","Giant_Skeleton","Lightning","X_Bow","PEKKA","Golem",
-              "The_Log","Miner","Princess","Ice_Wizard","Bandit","Night_Witch","Inferno_Dragon","Lumberjack","Electro_Wizard","Graveyard",
-              "Sparky","Lava_Hound")
-
-costs <- c(1,1,2,2,2,2,2,3,3,3,3,3,3,3,4,4,5,5,6,6,2,2,3,3,3,4,4,4,4,4,4,4,4,5,5,5,5,6,6,7,9,3,1,3,3,3,3,3,4,4,4,4,5,5,5,5,5,6,6,6,7,8,2,3,3,3,3,4,4,4,4,5,6,7)
 
 # Initialize empty data frame
 winrates <- setNames(data.frame(matrix(ncol = 3, nrow = 0)), c("Card", "Winrate","Use_rate"))

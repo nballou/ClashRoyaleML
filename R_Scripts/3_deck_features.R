@@ -10,6 +10,8 @@ data$level_discrepancy <- data$avg_lvl_L-data$avg_lvl_R
 data$left_elixir_cost <- 0
 data$right_elixir_cost <- 0
 
+# Function which goes through each card in the dataset, an increments the total elixir cost of each deck if it finds that card present
+# for each player.
 calc_avg_elixir <- function(df) {
   for (i in 1:74) {
     card_name_L <- paste("^", all_cards[i], "_L", "$", sep = "")
@@ -29,9 +31,6 @@ calc_avg_elixir <- function(df) {
 }
 
 data <- calc_avg_elixir(data)
-
-summary(data$avg_lvl_L)
-test <- data[data$num_cards_R > 8,]
 
 # Number of unique decks
 # This is based on location of the first relevant column, so be careful checking to see if you're using processed or raw data

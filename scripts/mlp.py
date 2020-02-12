@@ -277,7 +277,7 @@ runs = [
     # ('Only card lvls', cols_features_card_lvls, False),
     # ('Only trophy discrepancy', ['trophy.discrepancy'], True),  # BEST
     # ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls + cols_features_card_stats, False)
-    ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls, True)
+    ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls + cols_features_card_stats, True)
 ]
 
 

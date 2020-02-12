@@ -20,13 +20,16 @@ from sklearn.linear_model import LogisticRegression
 
 ### SETTINGS
 
+# Random seed
+SEED = 112
+
 # Base directory
 BASE = pathlib.Path.cwd()
 
 # Data dir and files
 DATADIR = BASE / 'data_clean'
 
-FILEPREFIX = 'processed_split_seed112'
+FILEPREFIX = 'processed_split2_seed112'
 
 FILENAME_TEST_DATA = '{}_test.csv'.format(FILEPREFIX)
 FILENAME_TRAIN_DATA = '{}_train.csv'.format(FILEPREFIX)
@@ -195,6 +198,10 @@ cols_features_card_lvls = [
     'Sparky_L_lvl', 'Sparky_R_lvl',
     'Lava_Hound_L_lvl', 'Lava_Hound_R_lvl'
 ]
+cols_features_card_stats = [
+    'avg_lvl_L', 'avg_lvl_R', 'level_discrepancy',
+    'left_elixir_cost', 'right_elixir_cost'
+]
 
 
 
@@ -217,7 +224,7 @@ def load_dataframe(PATH):
 
 
 # Feature and target constructor
-def get_dataset(df, cols_features=cols_features_trophies+cols_features_cards+cols_features_card_lvls):
+def get_dataset(df, cols_features):
     # Grab features
     X = df[cols_features].to_numpy()
 
@@ -233,8 +240,9 @@ def get_dataset(df, cols_features=cols_features_trophies+cols_features_cards+col
 # Training loop
 def train(X, y):
     model = LogisticRegression(
-        random_state = 0,
-        max_iter = 2000
+        random_state = SEED,
+        max_iter = 2000,
+        verbose = 1
     ).fit(X, y)
     print("Fit model  ({}) \n{} iterations \n".format(clock(), model.n_iter_[0]))
     return model
@@ -249,13 +257,14 @@ def test(model, X_test, y_test):
 ### RUNS
 # with different features
 runs = [
-    ('All features', cols_features_trophies + cols_features_cards + cols_features_card_lvls, False),
-    ('No card lvls', cols_features_trophies + cols_features_cards, False),
-    ('No trophies', cols_features_cards + cols_features_card_lvls, False),
-    # ('Only trophies', cols_features_trophies, False),
-    ('Only cards', cols_features_cards, False),
-    ('Only card lvls', cols_features_card_lvls, False),
-    ('Only trophy discrepancy', ['trophy.discrepancy'], True)
+    # ('All features', cols_features_trophies + cols_features_cards + cols_features_card_lvls, False),
+    # ('No card lvls', cols_features_trophies + cols_features_cards, False),
+    # ('No trophies', cols_features_cards + cols_features_card_lvls, False),
+    # # ('Only trophies', cols_features_trophies, False),
+    # ('Only cards', cols_features_cards, False),
+    # ('Only card lvls', cols_features_card_lvls, False),
+    # ('Only trophy discrepancy', ['trophy.discrepancy'], True),  # BEST
+    ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls + cols_features_card_stats, False)
 ]
 
 

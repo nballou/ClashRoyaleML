@@ -1,5 +1,15 @@
 library(ggplot2)
 
+addSmallLegend <- function(myPlot, pointSize = 0.5, textSize = 3, spaceLegend = 0.1) {
+  myPlot +
+    guides(shape = guide_legend(override.aes = list(size = pointSize)),
+           color = guide_legend(override.aes = list(size = pointSize)),
+           fill = guide_legend(ncol = 2, nrow = 38)) +
+    theme(legend.title = element_text(size = textSize),
+          legend.text  = element_text(size = textSize),
+          legend.key.size = unit(spaceLegend, "lines"))
+}
+
 all_trophies <- as.vector(as.matrix(data[,c("players.left.trophy","players.right.trophy")]))
 all_levels <- as.vector(as.matrix(data[,c("avg_lvl_L","avg_lvl_R")]))
 
@@ -26,19 +36,36 @@ ggplot(data = data, aes(x = abs(level_discrepancy))) +
   ggtitle("Difference in Card Levels") +
   theme(plot.title = element_text(hjust = 0.5))
 
+ggplot(data = data, aes(x = abs(trophy.discrepancy))) +
+  geom_histogram(bins = 30, fill = "forestgreen") +
+  ggtitle("Difference in Trophies") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
 
 # Barplot of Winrates
-ggplot(data=winrates, aes(x = reorder(Card, -Winrate), y = Winrate, fill = reorder(Card, -Winrate))) +
+p_winrate <- ggplot(data=winrates, aes(x = reorder(Card, -Winrate), y = Winrate, fill = reorder(Card, -Winrate))) +
   geom_bar(stat = "identity") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-#  coord_cartesian(ylim = c(0.39,0.53))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(size = 24, face = "bold", hjust = 0.5)) +
+  ggtitle("Winrate by Card") +
+  labs(fill = "Card Name") +
+  xlab("Card Name") +
+  coord_cartesian(ylim = c(0.35,0.55))
 
-# Barplot of Userates
-ggplot(data=winrates, aes(x = reorder(Card, -Use_rate), y = Use_rate, fill = reorder(Card, -Use_rate))) +
+addSmallLegend(p_winrate, pointSize = 5, textSize = 11, spaceLegend = 1)
+
+# Barplot of Winrates
+p_userate <- ggplot(data=winrates, aes(x = reorder(Card, -Use_rate), y = Use_rate, fill = reorder(Card, -Use_rate))) +
   geom_bar(stat = "identity") +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(size = 24, face = "bold", hjust = 0.5)) +
+  ggtitle("Use Rate by Card") +
+  labs(fill = "Card Name") +
+  xlab("Card Name") +
+  coord_cartesian(ylim = c(0,0.46))
+
+addSmallLegend(p_userate, pointSize = 5, textSize = 11, spaceLegend = 1)
 
 # L1 regularization
 # PCA
-# Check for collinearity somehow (VIF?
+# Check for collinearity somehow (VIF?)
 # in another universe—genetic algorithm for optimal threshold)

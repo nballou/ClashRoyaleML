@@ -9,7 +9,7 @@ data <- read.csv("matches_full.csv")
 #  slice(1:10)
 
 # Filter Only Ladder Matches
-data = subset(data, data$type == "ladder")
+data_challenge = subset(data3, data3$type == "challenge")
 
 # Better winner calculation
 data$left.result <- as.numeric(substring(data$result, 3, 3))

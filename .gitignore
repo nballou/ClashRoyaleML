@@ -1,14 +1,18 @@
-# Ignore all data files
+# Ignore all data and model files
 data_raw/*
 data_clean/*
+models/*
 # except the placeholder file that keeps
 # the directories in the repository
 !data_raw/.gitkeep
 !data_clean/.gitkeep
-<<<<<<< HEAD
-.Rproj.user
-=======
+!models/.gitkeep
 
 # Ignore notebook meta files
 .ipynb_checkpoints/
->>>>>>> seb
+
+# R project file
+.Rproj.user
+
+# Mac shit
+.DS_Store

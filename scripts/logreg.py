@@ -14,6 +14,7 @@ start = time.time()
 
 import numpy as np
 import pandas as pd
+from sklearn.externals import joblib
 from sklearn.linear_model import LogisticRegression
 
 
@@ -33,6 +34,9 @@ FILEPREFIX = 'processed_split2_seed112'
 
 FILENAME_TEST_DATA = '{}_test.csv'.format(FILEPREFIX)
 FILENAME_TRAIN_DATA = '{}_train.csv'.format(FILEPREFIX)
+
+MODELDIR = BASE / 'models'
+SAVENAME = 'logreg.joblib.pkl'
 
 
 
@@ -263,8 +267,8 @@ runs = [
     # # ('Only trophies', cols_features_trophies, False),
     # ('Only cards', cols_features_cards, False),
     # ('Only card lvls', cols_features_card_lvls, False),
-    # ('Only trophy discrepancy', ['trophy.discrepancy'], True),  # BEST
-    ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls + cols_features_card_stats, False)
+    # ('Only trophy discrepancy', ['trophy.discrepancy'], True),  # BEST, but data is tainted
+    ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls + cols_features_card_stats, True)
 ]
 
 
@@ -277,7 +281,7 @@ print("Ready  ({})\n".format(clock()))
 df_train = load_dataframe(DATADIR/FILENAME_TRAIN_DATA)
 df_test = load_dataframe(DATADIR/FILENAME_TEST_DATA)
 
-for i, (title, cols_features, print_details) in enumerate(runs):
+for i, (title, cols_features, save) in enumerate(runs):
     print("### RUN No. {} ###\n{}\n".format(i+1, title))
 
     X, y = get_dataset(df_train, cols_features)
@@ -286,9 +290,14 @@ for i, (title, cols_features, print_details) in enumerate(runs):
     model = train(X, y)
     score = test(model, X_test, y_test)
 
-    if print_details:
+    if save:
         print('coef_', model.coef_)
         print('intercept_', model.intercept_)
+        joblib.dump(model,
+            MODELDIR/SAVENAME,
+            compress = 9  # Compression level: 0 (None) to 9 (highest)
+        )
+        print("Saved trained model  ({}) \n{} \n".format(clock(), SAVENAME))
 
     del X, y, X_test, y_test, model
 

@@ -35,7 +35,7 @@ FILENAME_TEST_DATA = '{}_test.csv'.format(FILEPREFIX)
 FILENAME_TRAIN_DATA = '{}_train.csv'.format(FILEPREFIX)
 
 MODELDIR = BASE / 'models'
-SAVENAME = 'logreg.joblib.pkl'
+SAVENAME = 'mlp.joblib.pkl'
 
 
 

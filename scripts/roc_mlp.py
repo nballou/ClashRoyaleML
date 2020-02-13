@@ -12,24 +12,32 @@ import pathlib
 import time
 start = time.time()
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.externals import joblib
+from sklearn.metrics import roc_curve, auc
+from sklearn.linear_model import LogisticRegression
 
 
 
 ### SETTINGS
+
+# Random seed
+SEED = 112
 
 # Base directory
 BASE = pathlib.Path.cwd()
 
 # Data dir and files
 DATADIR = BASE / 'data_clean'
+DATAFILE = 'processed_split2_seed112_test.csv'
 
-FILEPREFIX = 'processed_split_seed112'
+MODELDIR = BASE / 'models'
+MODELNAME = 'mlp.joblib.pkl'
 
-FILENAME_TEST_DATA = '{}_test.csv'.format(FILEPREFIX)
-FILENAME_TRAIN_DATA = '{}_train.csv'.format(FILEPREFIX)
+PLOTDIR = BASE / 'Plots'
+PLOTNAME = 'roc_mlp.pdf'
 
 
 
@@ -195,6 +203,10 @@ cols_features_card_lvls = [
     'Sparky_L_lvl', 'Sparky_R_lvl',
     'Lava_Hound_L_lvl', 'Lava_Hound_R_lvl'
 ]
+cols_features_card_stats = [
+    'avg_lvl_L', 'avg_lvl_R', 'level_discrepancy',
+    'left_elixir_cost', 'right_elixir_cost'
+]
 
 
 
@@ -217,7 +229,7 @@ def load_dataframe(PATH):
 
 
 # Feature and target constructor
-def get_dataset(df, cols_features=cols_features_trophies+cols_features_cards+cols_features_card_lvls):
+def get_dataset(df, cols_features):
     # Grab features
     X = df[cols_features].to_numpy()
 
@@ -230,32 +242,47 @@ def get_dataset(df, cols_features=cols_features_trophies+cols_features_cards+col
     return X, y
 
 
-# Training
-def train(X, y):
-    model = RandomForestClassifier(
-        n_estimators = 100,
-        max_depth = 3,
-        random_state = 0
-    ).fit(X, y)
-    print("Fit model  ({}) \n".format(clock()))
+# Model loader
+def load_model(PATH):
+    model = joblib.load(PATH)
+
+    print("Loaded pre-trained model  ({}) \n{} \n".format(clock(), PATH.name))
     return model
 
 
-def test(model, X_test, y_test):
-    score = model.score(X_test, y_test)
-    print("Test score  ({}) \n{}\n".format(clock(), score))
-    return score
+# Predict
+def pred(model, X_test):
+    y = model.predict(X_test)
+    print("Prediction  ({}) \n{} samples\n".format(clock(), len(X_test)))
+    return y
+
+
+def roc(model, y_true, y_pred):
+    fpr, tpr, _ = roc_curve(y_true, y_pred)
+    roc_auc = auc(fpr, tpr)
+
+    print("Compute ROC  ({}) \nAUC: {}\n".format(clock(), roc_auc))
+    return fpr, tpr, roc_auc
+
+
+def plot_roc(fpr, tpr, auc):
+    plt.figure()
+    plt.plot(fpr, tpr, color='darkorange', label='ROC curve (area = {:.2f})'.format(auc))
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('MLP Receiver Operating Characteristic')
+    plt.legend(loc="lower right")
+    plt.savefig(PLOTDIR/PLOTNAME)
+    print("Plotted and saved  ({}) \n{} \n".format(clock(), PLOTNAME))
+
 
 
 ### RUNS
 # with different features
 runs = [
-    ('All features', cols_features_trophies + cols_features_cards + cols_features_card_lvls, False),
-    ('No card lvls', cols_features_trophies + cols_features_cards, False),
-    ('Only trophies', cols_features_trophies, False),
-    ('Only cards', cols_features_cards, False),
-    ('Only card lvls', cols_features_card_lvls, False),
-    ('Only trophy discrepancy', ['trophy.discrepancy'], False)
+    ('Cards, card lvls, card stats', cols_features_cards + cols_features_card_lvls + cols_features_card_stats, True)
 ]
 
 
@@ -265,23 +292,18 @@ runs = [
 
 print("Ready  ({})\n".format(clock()))
 
-df_train = load_dataframe(DATADIR/FILENAME_TRAIN_DATA)
-df_test = load_dataframe(DATADIR/FILENAME_TEST_DATA)
+df = load_dataframe(DATADIR/DATAFILE)
+model = load_model(MODELDIR/MODELNAME)
 
-for i, (title, cols_features, print_details) in enumerate(runs):
-    print("### RUN No. {} ###\n{}\n".format(i+1, title))
+for i, (title, cols_features, save) in enumerate(runs):
+    print("### EVAL RUN No. {} ###\n{}\n".format(i+1, title))
 
-    X, y = get_dataset(df_train, cols_features)
-    X_test, y_test = get_dataset(df_test, cols_features)
+    X, y = get_dataset(df, cols_features)
 
-    model = train(X, y)
-    score = test(model, X_test, y_test)
+    y_pred = pred(model, X)
+    fpr, tpr, auc = roc(model, y, y_pred)
+    plot_roc(fpr, tpr, auc)
 
-    if print_details:
-        # print('coef_', model.coef_)
-        # print('intercept_', model.intercept_)
-        pass
-
-    del X, y, X_test, y_test, model
+    del X, y, y_pred
 
 print("Done  ({})\n".format(clock()))

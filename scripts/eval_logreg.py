@@ -248,7 +248,7 @@ def load_model(PATH):
     return model
 
 
-# Training loop
+# Evaluate
 def eval(model, X_test, y_test):
     score = model.score(X_test, y_test)
     print("Classification score  ({}) \n{}\n".format(clock(), score))

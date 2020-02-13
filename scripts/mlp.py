@@ -241,7 +241,7 @@ def get_dataset(df, cols_features):
     return X, y
 
 
-# Training loop
+# Training
 def train(X, y):
     model = MLPClassifier(
         hidden_layer_sizes = (512, 64),

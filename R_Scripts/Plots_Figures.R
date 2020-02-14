@@ -43,8 +43,6 @@ ggplot(data = data, aes(x = abs(trophy.discrepancy))) +
   ggtitle("Difference in Trophies") +
   theme(plot.title = element_text(hjust = 0.5))
 
-
-
 # Barplot of Winrates
 p_winrate <- ggplot(data=winrates, aes(x = reorder(Card, -Winrate), y = Winrate, fill = reorder(Card, -Winrate))) +
   geom_bar(stat = "identity") +
@@ -66,6 +64,17 @@ p_userate <- ggplot(data=winrates, aes(x = reorder(Card, -Use_rate), y = Use_rat
   coord_cartesian(ylim = c(0,0.46))
 
 addSmallLegend(p_userate, pointSize = 5, textSize = 11, spaceLegend = 1)
+
+# Barplot of Userate, ordered in the same way as winrate
+p_userate2 <- ggplot(data = winrates, aes(x = reorder(Card, -Winrate), y = Use_rate, fill = reorder(Card, -Winrate))) +
+  geom_bar(stat = "identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), plot.title = element_text(size = 24, face = "bold", hjust = 0.5)) +
+  ggtitle("Userate by Card") +
+  labs(fill = "Card Name") +
+  xlab("Card Name") +
+  coord_cartesian(ylim = c(0,0.46))
+
+addSmallLegend(p_userate2, pointSize = 5, textSize = 11, spaceLegend = 1)
 
 # L1 regularization
 # PCA

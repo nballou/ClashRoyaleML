@@ -275,6 +275,10 @@ for i, (title, cols_features, save) in enumerate(runs):
 
     score = eval(model, X, y)
 
+    y_pred = model.predict(X)
+
+    print(np.transpose(np.vstack((y, y_pred))))
+
     del X, y
 
 print("Done  ({})\n".format(clock()))

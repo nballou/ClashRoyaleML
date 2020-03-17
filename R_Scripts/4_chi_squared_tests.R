@@ -1,92 +1,58 @@
-library(plyr)
 library(dplyr)
-library(car)
+library(rcompanion)
+library(ggplot2)
 
 bin_res <- read.csv("../data_clean/logreg_q20_pred.csv")
 summary_stats <- read.csv("../data_clean/logreg_q20_stats.csv")
 
 # Make contingency table
 correct <- aggregate(bin_res$correct, by=list(bin=bin_res$bin), FUN=sum)
+bin_res$incorrect <- ifelse(bin_res$correct == 1, 0, 1)
 incorrect <- aggregate(bin_res$incorrect, by=list(bin=bin_res$bin), FUN=sum)
 
-table <- cbind(correct,incorrect$x)
-colnames(table) <- c("bin","correct","incorrect")
-table$total <- table$correct + table$incorrect
+dt <- cbind(correct, incorrect$x)
+colnames(dt) <- c("bin","correct","incorrect")
+dt$total <- dt$correct + dt$incorrect
+dt$bin <- as.factor(dt$bin)
 
-table$bin <- as.factor(table$bin)
+dt <- data.frame(dt, row.names = 1)
+dt$total <- NULL
 
-table <- data.frame(table, row.names = 1)
-table$total <- NULL
-
-# First test
-chisq.test(bin_res$correct, bin_res$bin)
+# Test for main effect
+chisq.test(dt)
 
 # Multiple comparisons
-pairwiseNominalIndependence(as.matrix(table),
-                            fisher = FALSE,
-                            gtest  = FALSE,
-                            chisq  = TRUE,
-                            method = "fdr")
+pw <- pairwiseNominalIndependence(as.matrix(dt),
+                                  fisher = FALSE,
+                                  gtest  = FALSE,
+                                  chisq  = TRUE,
+                                  cramer = TRUE,
+                                  method = "fdr")
+
+pw$sig <- ifelse(pw$p.adj.Chisq <= 0.05, TRUE, FALSE)
+
+median(pw$Cramer.V[pw$sig == 1])
+
+# Logistic regression
+m1 <- glm(bin_res$correct ~ bin_res$bin, family = binomial())
+car::Anova(m1)
+
+summary(m1)
+
+# Linear regression
+bin_res.sc <- bin_res %>% mutate_if(is.numeric, scale)
+m2 <- lm(bin_res.sc$correct ~ bin_res.sc$bin)
+summary(m2)
+
+# Plot
+ggplot(data = summary_stats, aes(x = avg, y = test.acc)) +
+       geom_point() +
+       geom_smooth(method='glm', formula = y~x) +
+       coord_cartesian(ylim = c(0.50,0.65)) +
+       xlab("Trophy average in bin") +
+       ylab("Test accuracy")
 
 
+# Write data
+write.csv(pw, file = "../data_clean/chisq_lm_tests.csv")
 
-
-tab <- data.frame(table(bin_res$correct, bin_res$bin))
-
-# 2 here has it calculate proportions within each group as opposed to compared to the total
-(prop_tab <- prop.table(tab, 2))
-
-chisq.test(tab)
-
-data.table(count(bin_res, vars=c("bin","correct")))
-
-model <- glm(cbind(correct, incorrect) ~ bin, data=tab, family=binomial(logit))
-
-anova(model)
-lsmeans(model, pairwise ~ bin)
-
-bin_res$incorrect <- ifelse(bin_res$correct == 1, 0, 1)
-
-
-chisq.test(table)
-chisq.posthoc.test(table)
-
-
-dt <- bin_res %>%
-  group_by(bin) %>%
-  count(correct)
-# Desired output
-
-#  correct | incorrect
-# 1       |
-#--------------------
-# 2       |
-# --------------------
-# 3       |
-# --------------------
-# 4       |
-# --------------------
-# 5       |
-
-
-
-
-
-
-chisq.test(bin_res$correct[bin_res$bin == 0], bin_res$correct[bin_res$bin == 1])
-
-table(bin_res$correct/bin_res, bin_res$bin)
-
-kruskal.test(correct ~ bin, data = bin_res)
-pairwise.wilcox.test(bin_res$correct, bin_res$bin,
-                     p.adjust.method = "none")
-
-chisq.multcomp(bin_res$correct, bin_res$bin, p.method = "holm")
-
-
-
-counts <- c(49,30,63,59)
-chisq.test(counts)
-chisq.multcomp(counts)
-
-chisq.posthoc.test(bin_res$correct, bin_res$bin)

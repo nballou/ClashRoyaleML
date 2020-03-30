@@ -21,9 +21,20 @@ hist(c(data$avg_lvl_L,data$avg_lvl_R))
 
 # Histogram of ranks
 ggplot() + aes(all_trophies) +
-  geom_histogram(fill = "blue") +
-  geom_vline(aes(xintercept=mean(all_trophies)), color="black", linetype="dashed", size=1) +
-  theme(plot.title = element_text(hjust = 0.5))
+  geom_histogram(bins = 100) +
+  # geom_vline(aes(xintercept=mean(all_trophies)), color="black", linetype="dashed", size=1) +
+  geom_vline(aes(xintercept=4000, color="red", linetype = "solid"), size = 1) +
+  geom_vline(aes(xintercept=6000, color="red", linetype = "solid"), size = 1) +
+  xlab("Trophy count") +
+  ylab("Frequency") +
+  theme(plot.title.position = "plot",
+        plot.title = element_text(size = 18),
+        text = element_text(family = "Times New Roman"),
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 14),
+        legend.position = "none")
+
+ggsave("../plots/trophy_hist.png", device = "png", dpi = 300)
 
 # Histogram of average card levels
 ggplot() + aes(all_levels) +
